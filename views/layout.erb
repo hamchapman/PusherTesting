@@ -12,7 +12,9 @@
         });
         var board_connect_channel = pusher.subscribe('board_connect_channel');
         var testing_channel = pusher.subscribe('testing_channel');
+        var test_channel = pusher.subscribe('test_channel');
         var board_presence_channel = pusher.subscribe('presence-of-boards');
+        
         testing_channel.bind('new_message', function(data) {
           $('.messages').append("<div class=\"message\">" + data.message + "</div>");
         });
@@ -22,26 +24,23 @@
         board_presence_channel.bind('board_connect', function(data) {
           $('.messages').append("<div class=\"message\">" + data.message + "</div>");
         });
+
+        test_channel.bind('new_message', function(data) {
+          $('.messages').append("<div class=\"message\">" + data.url + "</div>");
+        });
+
         board_presence_channel.bind('pusher:member_added', function(member) {
-          // console.log("NEW PLAYER IN THE GAME");
-          // console.log(member);
-          // update_member_count(members.count);
-          // members.each(function(member) {
-            // if(member.id !== '1') {
-                console.log(member)
-                $('.messages').append("<div class=\"message\">" + member + "</div>");
-            // }
-            // add_member(member.id, member.info);
-          // });
+          console.log(member)
+          $('.messages').append("<div class=\"message\">" + member + "</div>");
         });
         Pusher.log = function(message) {
           if (window.console && window.console.log) window.console.log(message);
         };
         $("#message_form").submit(function(e) {
-            e.preventDefault();
-            $.post('/messages', $(this).serialize(), function() {
-                $("#message_form input").val('');
-            });
+          e.preventDefault();
+          $.post('/messages', $(this).serialize(), function() {
+            $("#message_form input").val('');
+          });
         });
       });
     </script>
