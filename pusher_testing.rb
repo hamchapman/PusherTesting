@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'bundler'
+require 'json'
 Bundler.require
 
 class PusherTesting < Sinatra::Base
@@ -16,7 +17,14 @@ class PusherTesting < Sinatra::Base
   end
 
   post '/messages' do
-    Pusher['test_channel'].trigger('new_message', params['message'])
+    Pusher['testing_channel'].trigger('new_message', params['message'])
+  end
+
+  post '/pusher/auth' do
+    content_type :json
+    Pusher[params[:channel_name]].authenticate(params[:socket_id], {
+      :user_id => 1, # => required
+    }).to_json
   end
 
   # start the server if ruby file executed directly
